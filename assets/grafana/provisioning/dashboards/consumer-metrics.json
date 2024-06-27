@@ -377,7 +377,7 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 11,
-        "w": 4,
+        "w": 5,
         "x": 19,
         "y": 0
       },
@@ -717,7 +717,7 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 10,
-        "w": 6,
+        "w": 7,
         "x": 17,
         "y": 11
       },
@@ -972,7 +972,7 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 9,
-        "w": 9,
+        "w": 10,
         "x": 14,
         "y": 21
       },
@@ -1057,7 +1057,7 @@
       "fillGradient": 0,
       "gridPos": {
         "h": 10,
-        "w": 11,
+        "w": 12,
         "x": 0,
         "y": 30
       },
@@ -1143,7 +1143,7 @@
       "gridPos": {
         "h": 10,
         "w": 12,
-        "x": 11,
+        "x": 12,
         "y": 30
       },
       "hiddenSeries": false,
@@ -1253,6 +1253,6 @@
   "timezone": "",
   "title": "Client Metrics (Consumer)",
   "uid": "Consumer",
-  "version": 7,
+  "version": 2,
   "weekStart": ""
 }
