@@ -17,7 +17,7 @@ This demo uses the [Confluent Kafka library](https://github.com/confluentinc/con
 
 ## How to enable librdkafka metrics
 To enable librdkafka metrics, two additional client configurations are required. See the last two parameters in the example below:
-```JSON
+```Python
 consumer_config = {
     "bootstrap.servers": ...
     "group.id": ...,
