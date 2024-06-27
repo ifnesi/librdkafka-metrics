@@ -1,0 +1,9 @@
+global:
+ scrape_interval: 5s
+ evaluation_interval: 5s
+scrape_configs:
+ - job_name: 'librdkafka_metrics'
+   static_configs:
+    - targets:
+      - kafka-clients:8001
+      - kafka-clients:8002
