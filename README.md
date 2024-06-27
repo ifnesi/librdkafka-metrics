@@ -1,23 +1,49 @@
 ![image](docs/logo.png)
 
 # librdkafka-metrics
-Kafka client metrics with librdkafka integrated with Prometheus and Grafana
-
-This is a work in progress!
-
-Based on https://github.com/shakti-garg/prometheus_kafka_metrics
-
-Prometheus Status
-![image](docs/prometheus-target-status.png)
-
-Grafana Producer Dashboard
-![image](docs/grafana-dashboard-producer.png)
-
-Grafana Consumer Dashboard
-![image](docs/grafana-dashboard-consumer.png)
+Kafka client metrics with librdkafka integrated with Prometheus and Grafana (based on https://github.com/shakti-garg/prometheus_kafka_metrics).
 
 
-Producer Metrics (http://localhost:8001/metrics)
+## What it is about
+In Apache Kafka, Java clients such as producers and consumers expose metrics via Java Management Extensions (JMX). JMX is a robust and standardized way to manage and monitor Java applications. It provides a wide range of performance and resource utilization metrics, enabling administrators to gain insights into the behavior and performance of Kafka clients. These metrics include details on message throughput, latency, connection counts, and other critical performance indicators. By leveraging JMX, users can integrate Kafka client metrics with various monitoring tools and dashboards, facilitating proactive management and troubleshooting of Kafka-based systems.
+
+On the other hand, non-Java Kafka clients, such as those based on [librdkafka](https://github.com/confluentinc/librdkafka) (commonly used in languages like Python, C, and Go), do not support JMX for metrics exposition. Instead, librdkafka can be configured to emit [internal metrics](https://github.com/confluentinc/librdkafka/blob/master/STATISTICS.md) at regular intervals. This is achieved by setting the `statistics.interval.ms` configuration property to a value greater than zero, which determines the interval (in milliseconds) at which metrics are collected and emitted. Additionally, a stats callback function (`stats_cb`) must be registered to handle these metrics. The metrics provided by librdkafka cover similar performance and resource usage areas as JMX metrics, including message production and consumption rates, latency, and broker connectivity. However, the key difference lies in the implementation and integration approach, with librdkafka relying on language-specific mechanisms to handle and process these metrics rather than the standardized JMX framework. This requires additional setup to integrate these metrics into monitoring systems, but it provides flexibility for non-Java clients to achieve comprehensive observability.
+
+This demo uses the [Confluent Kafka library](https://github.com/confluentinc/confluent-kafka-python) and [Confluent Platform](https://www.confluent.io/en-gb/product/confluent-platform/), where the librdkafka metrics are enabled for both a Kafka producer and a consumer. These metrics provide valuable insights into the performance and health of the Kafka clients, including message throughput, latency, and broker connection status. To facilitate monitoring, each client exposes an HTTP REST interface, making these metrics easily accessible. Tools like Prometheus can scrape this data from the REST endpoints at regular intervals, allowing seamless integration with Grafana for real-time visualization and analysis. This setup not only enhances observability but also enables proactive monitoring and quick troubleshooting of Kafka client operations.
+
+## Requirements
+- [Python 3.8+](https://www.python.org/)
+- [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+
+## How to enable librdkafka metrics
+To enable librdkafka metrics, two additional client configurations are required. See the last two parameters in the example below:
+```JSON
+consumer_config = {
+    "bootstrap.servers": ...
+    "group.id": ...,
+    "client.id": ...,
+    "auto.offset.reset": ...,
+    ...
+    # Set librdkafka metric
+    "statistics.interval.ms": 5000,        # interval in milliseconds
+    "stats_cb": <callback_function_here>,  # stats callback function
+}
+```
+
+Upon starting the Kafka client, the metrics will be automatically provided as a JSON string. For example, by setting the callback function parameter as `"stats_cb": my_callback` and defining the callback function as:
+```Python
+def my_callback(stats_json_str):
+    print(stats_json_str)
+```
+
+After 5 seconds (as specified by `"statistics.interval.ms": 5000`), the console output would be an example of the metrics JSON string:
+```JSON
+{ "name": "producer-client-01#producer-1", "client_id": "producer-client-01", "type": "producer", "ts":2812489068, "time":1719523102, "age":5001666, "replyq":1, "msg_cnt":4, "msg_size":128, "msg_max":100000, "msg_size_max":1073741824, "simple_cnt":0, "metadata_cache_cnt":1, "brokers":{ "broker:9094/1": { "name":"broker:9094/1", "nodeid":1, "nodename":"broker:9094", "source":"configured", "state":"UP", "stateage":4994779, "outbuf_cnt":0, "outbuf_msg_cnt":0, "waitresp_cnt":0, "waitresp_msg_cnt":0, "tx":591, "txbytes":200508, "txerrs":0, "txretries":0, "txidle":724, "req_timeouts":0, "rx":591, "rxbytes":41483, "rxerrs":0, "rxcorriderrs":0, "rxpartial":0, "rxidle":393, "zbuf_grow":0, "buf_grow":0, "wakeups":2330, "connects":1, "disconnects":0, "int_latency": { "min":5, "max":1002102, "avg":104039, "sum":261243741, "stddev": 12929, "p50": 3871, "p75": 5855, "p90": 6111, "p95": 6271, "p99": 88063, "p99_99": 130047, "outofrange": 441, "hdrsize": 11376, "cnt":2511 }, "outbuf_latency": { "min":8, "max":146, "avg":26, "sum":15418, "stddev": 14, "p50": 22, "p75": 30, "p90": 41, "p95": 54, "p99": 92, "p99_99": 146, "outofrange": 0, "hdrsize": 11376, "cnt":591 }, "rtt": { "min":166, "max":5448, "avg":447, "sum":264313, "stddev": 461, "p50": 337, "p75": 461, "p90": 619, "p95": 843, "p99": 2319, "p99_99": 5471, "outofrange": 0, "hdrsize": 13424, "cnt":591 }, "throttle": { "min":0, "max":0, "avg":0, "sum":0, "stddev": 0, "p50": 0, "p75": 0, "p90": 0, "p95": 0, "p99": 0, "p99_99": 0, "outofrange": 0, "hdrsize": 17520, "cnt":0 }, "req": { "Produce": 588, "ListOffsets": 0, "Metadata": 2, "FindCoordinator": 0, "SaslHandshake": 0, "ApiVersion": 1, "InitProducerId": 0, "AddPartitionsToTxn": 0, "AddOffsetsToTxn": 0, "EndTxn": 0, "TxnOffsetCommit": 0, "SaslAuthenticate": 0, "DescribeCluster": 0, "DescribeProducers": 0, "Unknown-62?": 0, "DescribeTransactions": 0, "ListTransactions": 0 }, "toppars":{ "demo_data_1-0": { "topic":"demo_data_1", "partition":0} } } }, "topics":{ "demo_data_1": { "topic":"demo_data_1", "age":5001, "metadata_age":3999, "batchsize": { "min":110, "max":17253, "avg":271, "sum":159727, "stddev": 779, "p50": 208, "p75": 257, "p90": 257, "p95": 257, "p99": 257, "p99_99": 17279, "outofrange": 0, "hdrsize": 14448, "cnt":588 }, "batchcnt": { "min":1, "max":339, "avg":4, "sum":2511, "stddev": 15, "p50": 3, "p75": 4, "p90": 4, "p95": 4, "p99": 4, "p99_99": 339, "outofrange": 0, "hdrsize": 8304, "cnt":588 }, "partitions":{ "0": { "partition":0, "broker":1, "leader":1, "desired":false, "unknown":false, "msgq_cnt":0, "msgq_bytes":0, "xmit_msgq_cnt":0, "xmit_msgq_bytes":0, "fetchq_cnt":0, "fetchq_size":0, "fetch_state":"none", "query_offset":-1001, "next_offset":0, "app_offset":-1001, "stored_offset":-1001, "stored_leader_epoch":-1, "commited_offset":-1001, "committed_offset":-1001, "committed_leader_epoch":-1, "eof_offset":-1001, "lo_offset":-1001, "hi_offset":-1001, "ls_offset":-1001, "consumer_lag":-1, "consumer_lag_stored":-1, "leader_epoch":0, "txmsgs":2511, "txbytes":105462, "rxmsgs":0, "rxbytes":0, "msgs": 2512, "rx_ver_drops": 0, "msgs_inflight": 0, "next_ack_seq": 0, "next_err_seq": 0, "acked_msgid": 0} , "-1": { "partition":-1, "broker":-1, "leader":-1, "desired":false, "unknown":false, "msgq_cnt":0, "msgq_bytes":0, "xmit_msgq_cnt":0, "xmit_msgq_bytes":0, "fetchq_cnt":0, "fetchq_size":0, "fetch_state":"none", "query_offset":-1001, "next_offset":0, "app_offset":-1001, "stored_offset":-1001, "stored_leader_epoch":-1, "commited_offset":-1001, "committed_offset":-1001, "committed_leader_epoch":-1, "eof_offset":-1001, "lo_offset":-1001, "hi_offset":-1001, "ls_offset":-1001, "consumer_lag":-1, "consumer_lag_stored":-1, "leader_epoch":-1, "txmsgs":0, "txbytes":0, "rxmsgs":0, "rxbytes":0, "msgs": 507, "rx_ver_drops": 0, "msgs_inflight": 0, "next_ack_seq": 0, "next_err_seq": 0, "acked_msgid": 0} } } } , "tx":591, "tx_bytes":200508, "rx":591, "rx_bytes":41483, "txmsgs":2511, "txmsg_bytes":105462, "rxmsgs":0, "rxmsg_bytes":0}
+```
+
+The [producer](https://github.com/ifnesi/librdkafka-metrics/blob/main/src/kafka_producer.py) and [consumer](https://github.com/ifnesi/librdkafka-metrics/blob/main/src/kafka_consumer.py) in this demo parse the metrics JSON string, convert them to the format expected by a Prometheus exporter (using the [Prometheus instrumentation library for confluent-kafka-python applications](https://pypi.org/project/prometheus-kafka-metrics/) Python lib), and then exposes it via an HTTP REST API.
+
+### Producer Metrics (http://localhost:8001/metrics)
 ```
 # HELP python_gc_objects_collected_total Objects collected during gc
 # TYPE python_gc_objects_collected_total counter
@@ -101,7 +127,7 @@ kafka_producer_response_rate{client_id="generic-avro-producer-01",type="producer
 kafka_producer_response_bytes_rate{client_id="generic-avro-producer-01",type="producer"} 0.0
 ```
 
-Consumer Metrics (http://localhost:8002/metrics)
+### Consumer Metrics (http://localhost:8002/metrics)
 ```
 # HELP python_gc_objects_collected_total Objects collected during gc
 # TYPE python_gc_objects_collected_total counter
@@ -180,7 +206,40 @@ kafka_consumer_records_lag{client_id="avro-deserialiser-01",partition="-1",topic
 # TYPE kafka_producer_response_bytes_rate gauge
 ```
 
-## External References
+## Running the demo
+Before running the demo for the first time, please execute the following steps:
+- Clone this repo: `git clone git@github.com:ifnesi/librdkafka-metrics.git`
+- Go to the demo folder: `cd librdkafka-metrics`
+
+All demo configuration are set via environment variables (please refer to the file `.env` for details).
+
+To start the demo, please run `./start_demo.sh`, after downloading all docker images it should take less than 2 minutes to have everything up and running.
+
+Once the start script is completed it will open the following browser tabs:
+- Confluent Control Center: http://localhost:9021/clusters
+- Prometheus Status: http://localhost:9090/targets?search=
+- Grafana: http://localhost:3000 (username: `admin`, password: `password`)
+
+### Confluent Control Center
+![image](docs/c3-topic.png)
+
+### Prometheus Status
+![image](docs/prometheus-target-status.png)
+
+### Grafana Producer Dashboard
+![image](docs/grafana-dashboard-producer.png)
+
+### Grafana Consumer Dashboard
+![image](docs/grafana-dashboard-consumer.png)
+
+# External References
+- [librdkafka Statistics](https://github.com/confluentinc/librdkafka/blob/master/STATISTICS.md)
+- [Prometheus instrumentation library for confluent-kafka-python applications](https://pypi.org/project/prometheus-kafka-metrics/)
+- [Original GitHub repo that inspired me to write this demo](https://github.com/shakti-garg/prometheus_kafka_metrics)
+- [Confluent Platform](https://www.confluent.io/en-gb/product/confluent-platform/)
+- [Confluent Control Center](https://docs.confluent.io/platform/current/control-center/index.html)
+- [confluent_kafka](https://docs.confluent.io/platform/current/clients/confluent-kafka-python/html/index.html) Python library (based on [librdkafka](https://github.com/confluentinc/librdkafka))
+
 Check out [Confluent's Developer portal](https://developer.confluent.io), it has free courses, documents, articles, blogs, podcasts and so many more content to get you up and running with a fully managed Apache Kafka service.
 
 Disclaimer: I work for Confluent :wink:
