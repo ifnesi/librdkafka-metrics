@@ -232,6 +232,9 @@ Once the start script is completed it will open the following browser tabs:
 ### Grafana Consumer Dashboard
 ![image](docs/grafana-dashboard-consumer.png)
 
+## Stopping the demo
+To stop the demo at any point, please run `./stop_demo.sh`.
+
 # External References
 - [librdkafka Statistics](https://github.com/confluentinc/librdkafka/blob/master/STATISTICS.md)
 - [Prometheus instrumentation library for confluent-kafka-python applications](https://pypi.org/project/prometheus-kafka-metrics/)
