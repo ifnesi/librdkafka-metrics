@@ -22,7 +22,7 @@ Currently, librdkafka provides client metrics that require custom collection met
 - [Python 3.8+](https://www.python.org/)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
-## How to enable librdkafka metrics on the clients
+### How to enable librdkafka metrics on the clients
 To enable librdkafka metrics, two additional client configurations are required. See the last two parameters in the example below:
 ```Python
 consumer_config = {
@@ -50,7 +50,7 @@ After 5 seconds (as specified by `"statistics.interval.ms": 5000`), the console 
 
 The [producer](https://github.com/ifnesi/librdkafka-metrics/blob/main/src/kafka_producer.py) and [consumer](https://github.com/ifnesi/librdkafka-metrics/blob/main/src/kafka_consumer.py) in this demo parse the metrics JSON string, convert them to the format expected by a Prometheus exporter (using the [Prometheus instrumentation library for confluent-kafka-python applications](https://pypi.org/project/prometheus-kafka-metrics/) Python lib), and then exposes it via an HTTP REST API.
 
-### Producer Metrics (http://localhost:8001/metrics)
+#### Producer Metrics (http://localhost:8001/metrics)
 ```
 # HELP python_gc_objects_collected_total Objects collected during gc
 # TYPE python_gc_objects_collected_total counter
@@ -134,7 +134,7 @@ kafka_producer_response_rate{client_id="generic-avro-producer-01",type="producer
 kafka_producer_response_bytes_rate{client_id="generic-avro-producer-01",type="producer"} 0.0
 ```
 
-### Consumer Metrics (http://localhost:8002/metrics)
+#### Consumer Metrics (http://localhost:8002/metrics)
 ```
 # HELP python_gc_objects_collected_total Objects collected during gc
 # TYPE python_gc_objects_collected_total counter
@@ -213,7 +213,7 @@ kafka_consumer_records_lag{client_id="avro-deserialiser-01",partition="-1",topic
 # TYPE kafka_producer_response_bytes_rate gauge
 ```
 
-## Running the demo
+### Running the demo
 Before running the demo for the first time, please execute the following steps:
 - Clone this repo: `git clone git@github.com:ifnesi/librdkafka-metrics.git`
 - Go to the demo folder: `cd librdkafka-metrics`
@@ -229,19 +229,19 @@ Once the start script is completed it will open the following browser tabs:
   - Producer Metrics dashboard: http://localhost:3000/d/Producer/client-metrics-producer?orgId=1&refresh=1m
   - Consumer Metrics dashboard: http://localhost:3000/d/Consumer/client-metrics-consumer?orgId=1&refresh=1m
 
-### Confluent Control Center
+#### Confluent Control Center
 ![image](docs/c3-topic.png)
 
-### Prometheus Status
+#### Prometheus Status
 ![image](docs/prometheus-target-status.png)
 
-### Grafana Producer Dashboard
+#### Grafana Producer Dashboard
 ![image](docs/grafana-dashboard-producer.png)
 
-### Grafana Consumer Dashboard
+#### Grafana Consumer Dashboard
 ![image](docs/grafana-dashboard-consumer.png)
 
-## Stopping the demo
+### Stopping the demo
 To stop the demo at any point, please run `./stop_demo.sh`.
 
 # External References
