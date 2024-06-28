@@ -18,6 +18,9 @@ Currently, librdkafka provides client metrics that require custom collection met
 
 ![image](docs/client-metrics-KIP714.png)
 
+In a nutshell that means (if using Prometheus/Grafana, for example:)
+![image](docs/cluster-client-metrics.png)
+
 ## Demo Requirements
 - [Python 3.8+](https://www.python.org/)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
