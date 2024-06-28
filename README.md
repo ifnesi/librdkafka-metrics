@@ -246,6 +246,7 @@ To stop the demo at any point, please run `./stop_demo.sh`.
 - [librdkafka Statistics](https://github.com/confluentinc/librdkafka/blob/master/STATISTICS.md)
 - [Prometheus instrumentation library for confluent-kafka-python applications](https://pypi.org/project/prometheus-kafka-metrics/)
 - [Original GitHub repo that inspired me to write this demo](https://github.com/shakti-garg/prometheus_kafka_metrics)
+- [KIP-714: Client metrics and observability](https://cwiki.apache.org/confluence/plugins/servlet/mobile?contentId=173085915#content/view/173085915)
 - [Confluent Platform](https://www.confluent.io/en-gb/product/confluent-platform/)
 - [Confluent Control Center](https://docs.confluent.io/platform/current/control-center/index.html)
 - [confluent_kafka](https://docs.confluent.io/platform/current/clients/confluent-kafka-python/html/index.html) Python library (based on [librdkafka](https://github.com/confluentinc/librdkafka))
