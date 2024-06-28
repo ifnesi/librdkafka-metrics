@@ -32,6 +32,23 @@ do
     sleep 1
 done
 
+echo ""
+logging "Waiting Producer Metrics Exporter to be ready" "INFO" -n
+while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://localhost:8001)" != "200" ]]
+do
+    echo -n "."
+    sleep 1
+done
+
+echo ""
+logging "Waiting Consumer Metrics Exporter to be ready" "INFO" -n
+while [[ "$(curl -s -o /dev/null -w ''%{http_code}'' http://localhost:8002)" != "200" ]]
+do
+    echo -n "."
+    sleep 1
+done
+sleep 5
+
 # Open browser with C3, Prometheus and Grafana
 python3 -m webbrowser -t "http://localhost:9021/clusters"
 python3 -m webbrowser -t "http://localhost:3000"
