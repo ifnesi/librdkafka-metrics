@@ -226,6 +226,8 @@ Once the start script is completed it will open the following browser tabs:
 - Confluent Control Center: http://localhost:9021/clusters
 - Prometheus Status: http://localhost:9090/targets?search=
 - Grafana: http://localhost:3000 (username: `admin`, password: `password`)
+  - Producer Metrics dashboard: http://localhost:3000/d/Producer/client-metrics-producer?orgId=1&refresh=1m
+  - Consumer Metrics dashboard: http://localhost:3000/d/Consumer/client-metrics-consumer?orgId=1&refresh=1m
 
 ### Confluent Control Center
 ![image](docs/c3-topic.png)
