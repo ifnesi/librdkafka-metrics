@@ -3,7 +3,6 @@
 # librdkafka-metrics
 Kafka client metrics with librdkafka integrated with Prometheus and Grafana (based on https://github.com/shakti-garg/prometheus_kafka_metrics).
 
-
 ## What it is about
 In Apache Kafka, Java clients such as producers and consumers expose metrics via Java Management Extensions (JMX). JMX is a robust and standardized way to manage and monitor Java applications. It provides a wide range of performance and resource utilization metrics, enabling administrators to gain insights into the behavior and performance of Kafka clients. These metrics include details on message throughput, latency, connection counts, and other critical performance indicators. By leveraging JMX, users can integrate Kafka client metrics with various monitoring tools and dashboards, facilitating proactive management and troubleshooting of Kafka-based systems.
 
@@ -13,6 +12,8 @@ This demo uses the [Confluent Kafka library](https://github.com/confluentinc/con
 
 ## What is on the horizon
 Currently, librdkafka provides client metrics that require custom collection methods and may not be consistently available for troubleshooting without additional configuration or application restarts. With the implementation of [KIP-714](https://cwiki.apache.org/confluence/plugins/servlet/mobile?contentId=173085915#content/view/173085915), librdkafka will adopt a standardized interface to push metrics directly to the broker, enabling centralized monitoring by cluster operators. Metrics will be enabled by default, ensuring critical data is always available without extra configuration. This change will provide consistent, predefined metrics across all Kafka clients, improving visibility into client performance and facilitating easier, more effective troubleshooting while maintaining user privacy.
+
+![image](docs/client-metrics-KIP714.png)
 
 ## Requirements
 - [Python 3.8+](https://www.python.org/)
@@ -45,6 +46,9 @@ After 5 seconds (as specified by `"statistics.interval.ms": 5000`), the console 
 ```
 
 The [producer](https://github.com/ifnesi/librdkafka-metrics/blob/main/src/kafka_producer.py) and [consumer](https://github.com/ifnesi/librdkafka-metrics/blob/main/src/kafka_consumer.py) in this demo parse the metrics JSON string, convert them to the format expected by a Prometheus exporter (using the [Prometheus instrumentation library for confluent-kafka-python applications](https://pypi.org/project/prometheus-kafka-metrics/) Python lib), and then exposes it via an HTTP REST API.
+
+### Demo Diagram
+![image](docs/demo-diagram.png)
 
 ### Producer Metrics (http://localhost:8001/metrics)
 ```
