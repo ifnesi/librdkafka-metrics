@@ -11,6 +11,9 @@ On the other hand, non-Java Kafka clients, such as those based on [librdkafka](h
 
 This demo uses the [Confluent Kafka library](https://github.com/confluentinc/confluent-kafka-python) and [Confluent Platform](https://www.confluent.io/en-gb/product/confluent-platform/), where the librdkafka metrics are enabled for both a Kafka producer and a consumer. These metrics provide valuable insights into the performance and health of the Kafka clients, including message throughput, latency, and broker connection status. To facilitate monitoring, each client exposes an HTTP REST interface, making these metrics easily accessible. Tools like Prometheus can scrape this data from the REST endpoints at regular intervals, allowing seamless integration with Grafana for real-time visualization and analysis. This setup not only enhances observability but also enables proactive monitoring and quick troubleshooting of Kafka client operations.
 
+## What is on the horizon
+Currently, librdkafka provides client metrics that require custom collection methods and may not be consistently available for troubleshooting without additional configuration or application restarts. With the implementation of [KIP-714](https://cwiki.apache.org/confluence/plugins/servlet/mobile?contentId=173085915#content/view/173085915), librdkafka will adopt a standardized interface to push metrics directly to the broker, enabling centralized monitoring by cluster operators. Metrics will be enabled by default, ensuring critical data is always available without extra configuration. This change will provide consistent, predefined metrics across all Kafka clients, improving visibility into client performance and facilitating easier, more effective troubleshooting while maintaining user privacy.
+
 ## Requirements
 - [Python 3.8+](https://www.python.org/)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
