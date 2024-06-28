@@ -19,7 +19,7 @@ Currently, librdkafka provides client metrics that require custom collection met
 - [Python 3.8+](https://www.python.org/)
 - [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
-## How to enable librdkafka metrics
+## How to enable librdkafka metrics on the clients
 To enable librdkafka metrics, two additional client configurations are required. See the last two parameters in the example below:
 ```Python
 consumer_config = {
